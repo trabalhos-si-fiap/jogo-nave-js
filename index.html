@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Canvas</title>
+</head>
+<body>
+    <canvas id="minha-tela" width="800" height="400" style="border: #F00 solid 1px;">
+    </canvas>
+
+    <script>
+       var canvas = document.getElementById('minha-tela'); 
+		var ctx = canvas.getContext('2d');
+		//definir o ínicio do desenho
+		var xAzul = 0
+		var yAzul = 150;
+        var larguraAzul = 50;
+        var alturaAzul = 50;
+		//a função gameloop é chamada aqui
+		requestAnimationFrame(gameloop);
+		
+		window.onkeydown = pressionaTecla; 
+        function pressionaTecla(tecla){
+			if(tecla.keyCode == 38  ) {
+			yAzul = yAzul - 10; //diminuir y tem o efeito de subida
+			}
+			if(tecla.keyCode == 40  ) {
+			yAzul = yAzul + 10; //aumentar y tem o efeito de descer
+			}
+			if(tecla.keyCode == 39  ) {
+			xAzul = xAzul + 10; //aumentar o x tem o efeito de ir para a direita
+			}
+			if(tecla.keyCode == 37  ) {
+			xAzul = xAzul - 10; //diminuir o x tem o efeito de ir para a esquerda
+			}	
+        }
+		function gameloop() {
+			desenharQuadrado(xAzul,yAzul);
+			//chama novamente o ciclo da animação
+            requestAnimationFrame(gameloop);
+		}
+		function desenharQuadrado(pX,pY) {
+			ctx.clearRect(0, 0, 800, 400); //antes de fazer o desenho é preciso limpar o canvas
+			ctx.fillStyle = '#00F';
+			ctx.fillRect(pX, pY, larguraAzul, alturaAzul);
+		}
+    </script>
+</body>
+</html>
