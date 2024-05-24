@@ -1,67 +1,39 @@
-const cenario = document.getElementById("cenario");
-const nave = document.getElementById("nave");
+const canvas = document.querySelector("canvas");
+const ctx = canvas.getContext("2d");
 
-const botaoIniciar = document.getElementById("Iniciar")
+const tamanho = 50;
 
-const larguraCenario = cenario.offsetWidth
-const alturaCenario = cenario.offsetHeight
+const nave = { x: 200, y: 200 }
 
-const larguraNave = nave.offsetWidth
-const alturaNave = nave.offsetHeight
-
-let velocidadeNave = 10;
-let posicaoHorizontal = 0;
-let posicaoVertical = 0;
-let direcaoHorizontal = 0;
-let direcaoVertical = 0;
-
-const teclaPressionada = (tecla) => {
-    if (tecla.key === "ArrowRight") {
-        direcaoHorizontal = 1;
-    }
-    else if (tecla.key === "ArrowLeft") {
-        direcaoHorizontal = -1
-    }
-    else if (tecla.key === "ArrowDown") {
-        direcaoVertical = 1
-    }
-    else if (tecla.key === "ArrowUp") {
-        direcaoVertical = -1
-    }
+const desenharNave = () => {
+    ctx.fillStyle = '#ddd'
+    ctx.fillRect(nave.x, nave.y, tamanho, tamanho)
 }
 
-const teclaSolta = (tecla) => {
-    if (tecla.key === "ArrowRight" || tecla.key === "ArrowLeft") {
-        direcaoHorizontal = 0;
-    }
-    else if (tecla.key === "ArrowDown" || tecla.key === "ArrowUp") {
-        direcaoVertical = 0
-    }
-}
+let direcao;
 
 const moveNave = () => {
-    posicaoHorizontal += direcaoHorizontal * velocidadeNave;
-    posicaoVertical += direcaoVertical * velocidadeNave;
-    if(posicaoHorizontal < 0) {
-        posicaoHorizontal = 0;
-    } else if (posicaoHorizontal + larguraCenario > larguraCenario){
-        posicaoHorizontal = larguraCenario -larguraNave
+if (!direcao)return
+
+    if (direcao == 'direita'){
+        nave.x = nave.x + 10
     }
-    
-    if (posicaoVertical < 0) {
-        posicaoVertical = 0;
-    } else if (posicaoVertical + alturaNave > alturaCenario) {
-        posicaoVertical = alturaCenario - alturaNave
+    if (direcao == 'esquerda'){
+        nave.x = nave.x - 10
+    }
+    if (direcao == 'baixo'){
+        nave.y = nave.y + 10
+    }
+    if (direcao == 'cima'){
+        nave.y = nave.y - 10
     }
 
-    nave.style.left = posicaoHorizontal + "px"
-    nave.style.top = posicaoVertical + "px"
+
 }
 
-const iniciarJogo = () => {
-    document.addEventListener("keydown", teclaPressionada)
-    document.addEventListener("keyup", teclaSolta)
+setInterval(() => {
+    ctx.clearRect(0,0,900,600)
 
-    checaMoveNave = setInterval(moveNave, 50)
-    botaoIniciar.style.display = "none"
-}
+    moveNave()
+    desenharNave()
+},300)

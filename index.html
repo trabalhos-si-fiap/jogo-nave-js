@@ -10,15 +10,23 @@
     </canvas>
 
     <script>
-       var canvas = document.getElementById('minha-tela'); 
+        var canvas = document.getElementById('minha-tela'); 
 		var ctx = canvas.getContext('2d');
 		//definir o ínicio do desenho
 		var xAzul = 0
 		var yAzul = 150;
         var larguraAzul = 50;
         var alturaAzul = 50;
+
+        var xVermelho = 200;
+        var yVermelho = 200;
+        var larguraVermelho = 50;
+        var alturaVermelho = 50;
+
+
 		//a função gameloop é chamada aqui
 		requestAnimationFrame(gameloop);
+
 		
 		window.onkeydown = pressionaTecla; 
         function pressionaTecla(tecla){
@@ -36,11 +44,17 @@
 			}	
         }
 		function gameloop() {
-			desenharQuadrado(xAzul,yAzul);
+
+            desenharQuadradoAzul(xAzul,yAzul);
+            
 			//chama novamente o ciclo da animação
             requestAnimationFrame(gameloop);
 		}
-		function desenharQuadrado(pX,pY) {
+
+        
+
+		function desenharQuadradoAzul(pX,pY) {
+            //Desenhando quadrado azul
 			ctx.clearRect(0, 0, 800, 400); //antes de fazer o desenho é preciso limpar o canvas
 			ctx.fillStyle = '#00F';
 			ctx.fillRect(pX, pY, larguraAzul, alturaAzul);
