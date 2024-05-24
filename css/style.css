@@ -1,0 +1,52 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 900;
+    font-size: 1.1em;
+    color: white;
+}
+
+#cenario {
+    position: relative;
+    width: 800px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    background-image: url(../images/Background/Space01.png);
+    background-position: center;
+    background-repeat: repeat;
+    background-size: cover;
+}
+
+#Iniciar {
+    position: absolute;
+    color: black;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: block;
+    cursor: pointer;
+}
+
+
+#menu {
+    width: 80%;
+    padding: .3em;
+    display: flex;
+    justify-content: space-between;
+}
+
+#nave {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-image: url(../images/spacecrafts/tiny_ship1.png);
+    background-position: center;
+    background-size: contain;
+}
