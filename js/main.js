@@ -1,7 +1,10 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
-
+const asteroideLargura = 55;
+const asteroideAltura = 35;
+const naveLargura = 75;
+const naveAltura = 75;
 
 const numeroAleatorio = (min, max) => {
     return Math.round(Math.random() * (max - min) + min)
@@ -10,15 +13,15 @@ let imagemNave = new Image()
 imagemNave.src = "images/spacecrafts/nave_direita.png"
 
 const tamanho = 50;
-const nave = { x: 200,  y: 200 }
-const asteroide = {x: numeroAleatorio(0,300),  y: numeroAleatorio(0,300)}
+const nave = { x: 200,  y: 200 };
+const asteroide = {x: numeroAleatorio(0,300),  y: numeroAleatorio(0,300)};
 
 const desenharNave = () => {
-    ctx.fillStyle = '#ddd'
-    ctx.drawImage(imagemNave,nave.x, nave.y)
+    ctx.fillStyle = '#ddd';
+    ctx.drawImage(imagemNave,nave.x, nave.y);
 }
 
-let imagemAsteroide = new Image()
+let imagemAsteroide = new Image();
 imagemAsteroide.src = "images/rocks/Asteroids2.png"
 
 
@@ -27,10 +30,7 @@ const desenharAsteroide = () => {
     ctx.drawImage(imagemAsteroide, asteroide.x, asteroide.y)
 }
 
-
-
 let direcao, loopId;
-
 
 
 const moveNave = () => {
@@ -39,7 +39,7 @@ if (!direcao)return
     if (direcao == 'direita'){
         nave.x = nave.x + 10
         imagemNave.src = "images/spacecrafts/nave_direita.png"
-    }
+    }   
     if (direcao == 'esquerda'){
         nave.x = nave.x - 10
         imagemNave.src = "images/spacecrafts/nave_esquerda.png"
@@ -55,13 +55,20 @@ if (!direcao)return
 
 }
 
+const colapsar = () => {
+    if(((asteroide.x + asteroideLargura) >  nave.x && asteroide.x < (nave.x + 
+        naveLargura) ) && ( (asteroide.y + asteroideAltura) > nave.y && asteroide.y < (nave.y + naveLargura))) {
+            alert('Oi')
+        }
+}
+
 const gameloop = () => {
     clearInterval(loopId)
     ctx.clearRect(0,0,900,600);
     moveNave();
     desenharNave();
     desenharAsteroide();
-    
+    colapsar();
     
     loopId = setInterval(() => {
         gameloop();
