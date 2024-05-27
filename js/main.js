@@ -1,6 +1,8 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
+
+
 const numeroAleatorio = (min, max) => {
     return Math.round(Math.random() * (max - min) + min)
 }
@@ -9,20 +11,23 @@ imagemNave.src = "images/spacecrafts/nave_direita.png"
 
 const tamanho = 50;
 const nave = { x: 200,  y: 200 }
-const asteroide = {x: numeroAleatorio(0,500),  y: numeroAleatorio(0,500)}
+const asteroide = {x: numeroAleatorio(0,300),  y: numeroAleatorio(0,300)}
 
 const desenharNave = () => {
     ctx.fillStyle = '#ddd'
     ctx.drawImage(imagemNave,nave.x, nave.y)
 }
 
+let imagemAsteroide = new Image()
+imagemAsteroide.src = "images/rocks/Asteroids2.png"
+
+
 const desenharAsteroide = () => {
-    ctx.shadowColor = 'blue';
-    ctx.shadowBlur = 50;
-    ctx.fillStyle = 'blue'
-    ctx.fillRect(asteroide.x, asteroide.y, tamanho, tamanho)
-    ctx.shadowBlur = 0
+    ctx.fillStyle = '#ddd'
+    ctx.drawImage(imagemAsteroide, asteroide.x, asteroide.y)
 }
+
+
 
 let direcao, loopId;
 
