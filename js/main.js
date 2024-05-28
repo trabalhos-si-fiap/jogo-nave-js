@@ -47,7 +47,7 @@ const gameLoop = () => {
 
 
   rocks.forEach((rock) => {
-    checkCollision(ship, rock, canvas.width, score);
+    checkCollision(ship, rock, canvas.width, score, rocks, wave);
   })
   
 

@@ -44,6 +44,11 @@ export class Score {
         }
     }
 
+    restart() {
+        this.score = 0
+        this.clock.restart()
+    }
+
     run() {
         this.morePoints()
         this.losePoints()
@@ -93,6 +98,6 @@ export class Clock {
         this.onlySeconds = 0;
         this.minutes = 0;
         this.hours = 0;
-        timerElement.textContent = "00:00:00"
+        this.timerElement.textContent = "00:00:00"
     }
 }
