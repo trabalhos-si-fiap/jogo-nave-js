@@ -11,7 +11,7 @@ export class Wave {
     }
 
     changeWave() {
-        if (this.clock.onlySeconds % 5 == 0 && this.rocks.length <= 5) {
+        if (this.clock.onlySeconds % 30 == 0 && this.rocks.length <= 5) {
             this.wave += 1
             this.waveDiv.innerHTML = `Fase ${this.wave}`
             this.rocks.push(new Rock(this.canvasWidth, 150, this.wave))
