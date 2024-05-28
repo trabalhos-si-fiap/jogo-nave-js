@@ -3,8 +3,26 @@ const ctx = canvas.getContext("2d");
 
 const asteroideLargura = 20;
 const asteroideAltura = 20;
-const naveLargura = 50;
+const naveLargura = 60;
 const naveAltura = 50;
+
+let direcao, loopId;
+
+let validacao = true;
+
+if( direcao == "parado"){
+    validacao = false
+}
+
+let score = 0;
+let time = 0;
+const pontuaçao = document.getElementById('pontos');
+const intervalo = setInterval(() => {
+    while (!validacao) {
+        score -= 1
+    }
+    pontuaçao.innerHTML = ` Pontos: ${score}`;
+}, 1000);
 
 const numeroAleatorio = (min, max) => {
   return Math.round(Math.random() * (max - min) + min);
@@ -44,7 +62,6 @@ const desenharAsteroide = () => {
   ctx.drawImage(imagemAsteroide, asteroide.x, asteroide.y)
 };
 
-let direcao, loopId;
 
 const moveNave = () => {
   if (!direcao) return;
@@ -65,7 +82,9 @@ const moveNave = () => {
     nave.y = nave.y - 10;
     imagemNave.src = "images/spacecrafts/nave_cima.png";
   }
+
 };
+
 
 let decrementarAsteroide = 10;
 
@@ -106,6 +125,7 @@ const resetar = () => {
   nave.y = 200;
   asteroide.x = canvas.width;
   asteroide.y = numeroAleatorio(0, 300);
+  score = 0;
 };
 
 const colapsar = () => {
@@ -167,5 +187,8 @@ document.addEventListener("keydown", ({ key }) => {
 });
 
 document.addEventListener("keyup", ({ key }) => {
-  direcao = "parado";
+   direcao = "parado"
 });
+
+
+
