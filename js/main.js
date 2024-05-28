@@ -3,8 +3,9 @@ const ctx = canvas.getContext("2d");
 
 const asteroideLargura = 20;
 const asteroideAltura = 20;
-const naveLargura = 60;
-const naveAltura = 50;
+
+import { Nave } from './nave.js'
+
 
 let direcao, loopId;
 
@@ -27,11 +28,19 @@ const intervalo = setInterval(() => {
 const numeroAleatorio = (min, max) => {
   return Math.round(Math.random() * (max - min) + min);
 };
-let imagemNave = new Image();
-imagemNave.src = "images/spacecrafts/nave_direita.png";
 
-const tamanho = 50;
-const nave = { x: 200, y: 200 };
+
+
+let imagemAsteroide = new Image(50, 50);
+imagemAsteroide.src = "images/rocks/Asteroids2.png";
+
+const desenharAsteroide = () => {
+/*asteroides.forEach((pedra) => {
+    ctx.drawImage(imagemAsteroide, pedra.x, pedra.y);
+});*/
+ctx.drawImage(imagemAsteroide, asteroide.x, asteroide.y)
+};
+
 
 //let asteroides = [{ x: canvas.width, y: numeroAleatorio(0, 300)}];
 
@@ -48,42 +57,9 @@ const criarAsteroide = () => {
 
 const asteroide = criarAsteroide();
 
-const desenharNave = () => {
-  ctx.drawImage(imagemNave, nave.x, nave.y);
-};
-
-let imagemAsteroide = new Image(50, 50);
-imagemAsteroide.src = "images/rocks/Asteroids2.png";
-
-const desenharAsteroide = () => {
-  /*asteroides.forEach((pedra) => {
-    ctx.drawImage(imagemAsteroide, pedra.x, pedra.y);
-  });*/
-  ctx.drawImage(imagemAsteroide, asteroide.x, asteroide.y)
-};
 
 
-const moveNave = () => {
-  if (!direcao) return;
 
-  if (direcao == "direita") {
-    nave.x = nave.x + 10;
-    imagemNave.src = "images/spacecrafts/nave_direita.png";
-  }
-  if (direcao == "esquerda") {
-    nave.x = nave.x - 10;
-    imagemNave.src = "images/spacecrafts/nave_esquerda.png";
-  }
-  if (direcao == "baixo") {
-    nave.y = nave.y + 10;
-    imagemNave.src = "images/spacecrafts/nave_baixo.png";
-  }
-  if (direcao == "cima") {
-    nave.y = nave.y - 10;
-    imagemNave.src = "images/spacecrafts/nave_cima.png";
-  }
-
-};
 
 
 let decrementarAsteroide = 10;
@@ -128,7 +104,7 @@ const resetar = () => {
   score = 0;
 };
 
-const colapsar = () => {
+const colapsar = (nave) => {
     /*asteroides.forEach((pedra) => {
         if (
             pedra.x + asteroideLargura > nave.x &&
@@ -144,51 +120,59 @@ const colapsar = () => {
 
   if (
     asteroide.x + asteroideLargura > nave.x &&
-    asteroide.x < nave.x + naveLargura &&
+    asteroide.x < nave.x + nave.largura &&
     asteroide.y + asteroideAltura > nave.y &&
-    asteroide.y < nave.y + naveLargura
+    asteroide.y < nave.y + nave.largura
   ) {
     alert("Game Over!!");
     resetar();
   }
 };
 
+
+const escutaTeclado = (nave) => {
+    document.addEventListener("keydown", ({ key }) => {
+        if (key == "ArrowRight") {
+          nave.direcao = "direita";
+        }
+        if (key == "ArrowLeft") {
+          nave.direcao = "esquerda";
+        }
+        if (key == "ArrowDown") {
+          nave.direcao = "baixo";
+        }
+        if (key == "ArrowUp") {
+          nave.direcao = "cima";
+        }
+      });
+      
+      document.addEventListener("keyup", ({ key }) => {
+         nave.direcao = "parado"
+      });
+      
+}
+
+
+const nave = new Nave();
+
 const gameloop = () => {
+
   clearInterval(loopId);
-  ctx.clearRect(0, 0, 900, 600);
-  moveNave();
-  desenharNave();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  nave.mover(canvas.width, canvas.height);
+  nave.desenhar(ctx);
   desenharAsteroide();
   movimentarAsteroide();
-  colapsar();
+  colapsar(nave);
   mudarAsteroideXY();
+  escutaTeclado(nave)
 
   loopId = setInterval(() => {
     gameloop();
-  }, 100);
+  }, 50);
 };
 
 gameloop();
-
-document.addEventListener("keydown", ({ key }) => {
-  console.log(key);
-  if (key == "ArrowRight") {
-    direcao = "direita";
-  }
-  if (key == "ArrowLeft") {
-    direcao = "esquerda";
-  }
-  if (key == "ArrowDown") {
-    direcao = "baixo";
-  }
-  if (key == "ArrowUp") {
-    direcao = "cima";
-  }
-});
-
-document.addEventListener("keyup", ({ key }) => {
-   direcao = "parado"
-});
 
 
 
