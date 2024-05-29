@@ -8,10 +8,23 @@
     <title>Jogo da Navinha</title>
 </head>
 <body>
-    <div id="wave"></div>
-    <div id="timer">00:00:00</div>
-    <div id="scorePoints">0 pontos</div>
-    <canvas id="minha-tela" width="800" height="400"></canvas>
+    <section class="gameInfo">
+        <div id="wave"></div>
+        <div id="timer">00:00:00</div>
+        <div id="scorePoints">0 pontos</div>
+    </section>
+    <canvas width="800" height="400"></canvas>
+    <button id="play" class="play">Jogar</button>
+    <section class="tutorial">
+        <h1>Como jogar</h1>
+        <p>Desvie dos asteroides e sobreviva o maior tempo possível.</p>
+        <ul>
+            <li>A cada 30 segundos você passa de fase e um novo asteroide aparecerá;</li>
+            <li>Você perde 5 pontos se ficar parado por mais de 3 segundos;</li>
+            <li>Você pode se mover para cima, baixo, esquerda e direita com as setas do teclado.</li>
+        </ul>
+        <p>Boa sorte e divirta-se.</p>
+    </section>
     <script type="module" src="/js/main.js" defer></script>
 </body>
 </html>
