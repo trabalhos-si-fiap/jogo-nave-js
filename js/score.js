@@ -42,6 +42,8 @@ export class Score {
 
   restart() {
     this.score = 0;
+    this.htmlPoins.innerHTML = `${this.score} pontos`;
+    this.stopedShipTime = 0;
     this.clock.restart();
   }
 
