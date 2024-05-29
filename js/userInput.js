@@ -1,20 +1,20 @@
 export const keyboardListener = (ship) => {
   document.addEventListener("keydown", ({ key }) => {
     if (key == "ArrowRight") {
-      ship.direction = "direita";
+      ship.direction = "right";
     }
     if (key == "ArrowLeft") {
-      ship.direction = "esquerda";
+      ship.direction = "left";
     }
     if (key == "ArrowDown") {
-      ship.direction = "baixo";
+      ship.direction = "down";
     }
     if (key == "ArrowUp") {
-      ship.direction = "cima";
+      ship.direction = "up";
     }
   });
 
   document.addEventListener("keyup", ({ key }) => {
-    ship.direction = "parado";
+    ship.direction = "stopped";
   });
 };

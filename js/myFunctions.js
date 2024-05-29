@@ -4,29 +4,28 @@ export const randInt = (min, max) => {
 
 export const checkCollision = (ship, rock, canvasWidth, score, rocks, wave) => {
   if (
-    (rock.x + rock.width > ship.x) &&
-    (rock.x < ship.x + ship.width) &&
-    (rock.y + rock.height > ship.y) &&
-    (rock.y < ship.y + ship.width)
+    rock.x + rock.width > ship.x &&
+    rock.x < ship.x + ship.width &&
+    rock.y + rock.height > ship.y &&
+    rock.y < ship.y + ship.width
   ) {
-    alert("Game Over!!");
+    alert("Game Over!!\nClique em ok para reiniciar.");
     restartGame(ship, rock, canvasWidth, score, rocks, wave);
-  } else {
-    console.log('Não colidiu', rock.id)
   }
 };
 
 export const restartGame = (ship, rock, canvasWidth, score, rocks, wave) => {
   ship.x = 200;
   ship.y = 200;
+  ship.direction = "stopped";
+  score.stopedShipTime = 0;
   rock.x = canvasWidth;
   rock.y = randInt(0, 300);
-  score.restart()
+  score.restart();
   score.clock.start();
   wave.wave = 0;
 
-  for (let i = 0; i <= rocks.length; i++){
-    rocks.pop()
+  for (let i = 0; i <= rocks.length; i++) {
+    rocks.pop();
   }
 };
-
