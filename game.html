@@ -37,7 +37,372 @@
             <li>Rafael Costrov</li>
         </ul>
     </section>
-    <script type="module" src="./js/main.js" defer></script>
+
+    <!-- <script type="module" src="./js/main.js" defer></script> -->
+    <!-- Avaliador: para que a linha comentada acima funcione, é necessário rodar o projeto via LiveServer ou outro servidor HTTP. -->
+    <!-- Para que funcione diretamente no navegador, concentramos todo o código JS na tag abaixo. -->
+
+    <script>
+        class Ship {
+            constructor(
+                x = 200,
+                y = 20,
+                height = 60,
+                width = 60,
+                speed = 10,
+                direction = "stopped"
+            ) {
+                this.x = x;
+                this.y = y;
+                this.height = height;
+                this.width = width;
+                this.speed = speed;
+                this.direction = direction;
+                this.image = new Image();
+            }
+
+            move(canvasWidth, canvasHeight) {
+                if (!this.direction) return;
+
+                if (
+                    this.direction === "right" &&
+                    this.x + this.width + this.speed <= canvasWidth
+                ) {
+                    this.x += this.speed;
+                    this.image.src = "images/spacecrafts/nave_direita.png";
+                } else if (this.direction === "left" && this.x - this.speed >= 0) {
+                    this.x -= this.speed;
+                    this.image.src = "images/spacecrafts/nave_esquerda.png";
+                } else if (
+                    this.direction === "down" &&
+                    this.y + this.height * 2 + this.speed <= canvasHeight
+                ) {
+                    this.y += this.speed;
+                    this.image.src = "images/spacecrafts/nave_baixo.png";
+                } else if (this.direction === "up" && this.y - this.speed >= 0) {
+                    this.y -= this.speed;
+                    this.image.src = "images/spacecrafts/nave_cima.png";
+                }
+            }
+
+            draw(ctx) {
+                if (!this.image.src) {
+                    this.image.src = "images/spacecrafts/nave_direita.png";
+                }
+                ctx.drawImage(this.image, this.x, this.y, this.height, this.width);
+            }
+        }
+
+        class Rock {
+            constructor(
+                x = 0,
+                y = 0,
+                id = 0,
+                height = 35,
+                width = 35,
+                image = null,
+                speed = 10
+            ) {
+                this.id = id;
+                this.x = x;
+                this.y = y;
+                this.height = height;
+                this.width = width;
+                this.image = new Image();
+                this.image.src = "images/rocks/Asteroids2.png";
+                this.speed = speed;
+                this.seatedTrajectory = false;
+                this.yDirection = 0;
+            }
+
+            calcYtragetory(randInt) {
+                if (!this.seatedTrajectory) {
+                    const middleToDown = this.y >= 180 && this.y <= 350;
+                    const middleUp = this.y > 0 && this.y < 180;
+
+                    if (middleToDown) {
+                        this.yDirection = randInt(0, -5);
+                    } else if (middleUp) {
+                        this.yDirection = randInt(0, 5);
+                    }
+                    this.seatedTrajectory = true;
+                }
+            }
+
+            move(multipleSpeedX, randInt) {
+                this.x -= this.speed * multipleSpeedX;
+                this.calcYtragetory(randInt);
+                this.y -= this.yDirection;
+            }
+
+            changeSpeed() {
+                if (this.speed < 30) {
+                    this.speed += 2.5;
+                }
+            }
+
+            spaw(canvas, randInt) {
+                if (this.x < 0) {
+                    this.x = canvas.width;
+                    this.y = randInt(0, canvas.height);
+                    this.changeSpeed();
+                    this.seatedTrajectory = false;
+                }
+            }
+
+            draw(ctx) {
+                ctx.drawImage(this.image, this.x, this.y, this.height, this.height);
+            }
+        }
+
+        function sleep(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        class Score {
+            constructor(clock, htmlPoins, htmlTimer) {
+                this.score = 0;
+                this.time = 0;
+                this.clock = clock;
+                this.stopedShipTime = 0;
+                this.htmlTimer = htmlTimer;
+                this.htmlPoins = htmlPoins;
+            }
+
+            async stopedShipTimer(ship) {
+                let intervalId;
+                if (ship.direction == "parado") {
+                    intervalId = setInterval(() => {
+                        this.stopedShipTime += 1;
+                    }, 1000);
+                } else {
+                    clearInterval(intervalId);
+                    this.stopedShipTime = 0;
+                }
+                await sleep(1000);
+                clearInterval(intervalId);
+            }
+
+            losePoints() {
+                if (this.stopedShipTime > 3) {
+                    this.score -= 5;
+                    this.htmlPoins.innerHTML = `${this.score} pontos`;
+                }
+            }
+
+            morePoints() {
+                if (this.clock.onlySeconds % 5 == 0 && this.clock.onlySeconds != 0) {
+                    this.score += 5;
+                    this.htmlPoins.innerHTML = `${this.score} pontos`;
+                }
+            }
+
+            restart() {
+                this.score = 0;
+                this.htmlPoins.innerHTML = `${this.score} pontos`;
+                this.stopedShipTime = 0;
+                this.clock.restart();
+            }
+
+            run() {
+                this.morePoints();
+                this.losePoints();
+            }
+        }
+
+        class Clock {
+            constructor(timerElement) {
+                this.onlySeconds = 0;
+                this.seconds = 0;
+                this.minutes = 0;
+                this.hours = 0;
+                this.timer;
+                this.timerElement = timerElement;
+            }
+
+            updateTimer() {
+                this.seconds++;
+                this.onlySeconds++;
+                if (this.seconds >= 60) {
+                    this.seconds = 0;
+                    this.minutes++;
+                    if (this.minutes >= 60) {
+                        this.minutes = 0;
+                        this.hours++;
+                    }
+                }
+                this.timerElement.innerHTML =
+                    (this.hours ? (this.hours > 9 ? this.hours : "0" + this.hours) : "00") +
+                    ":" +
+                    (this.minutes
+                        ? this.minutes > 9
+                            ? this.minutes
+                            : "0" + this.minutes
+                        : "00") +
+                    ":" +
+                    (this.seconds > 9 ? this.seconds : "0" + this.seconds);
+            }
+
+            start() {
+                this.timer = setInterval(() => this.updateTimer(), 1000);
+            }
+
+            stop() {
+                clearInterval(this.timer);
+                this.timer = null;
+            }
+
+            restart() {
+                clearInterval(this.timer);
+                this.timer = null;
+                this.seconds = 0;
+                this.onlySeconds = 0;
+                this.minutes = 0;
+                this.hours = 0;
+                this.timerElement.textContent = "00:00:00";
+            }
+        }
+
+        const keyboardListener = (ship) => {
+            document.addEventListener("keydown", ({ key }) => {
+                if (key == "ArrowRight") {
+                    ship.direction = "right";
+                }
+                if (key == "ArrowLeft") {
+                    ship.direction = "left";
+                }
+                if (key == "ArrowDown") {
+                    ship.direction = "down";
+                }
+                if (key == "ArrowUp") {
+                    ship.direction = "up";
+                }
+            });
+
+            document.addEventListener("keyup", ({ key }) => {
+                ship.direction = "stopped";
+            });
+        };
+
+        const runOberver = (timerDiv, ship, score, wave) => {
+            function onTextChange(mutationsList) {
+                score.stopedShipTimer(ship);
+                score.run();
+                wave.changeWave();
+            }
+            const observer = new MutationObserver(onTextChange);
+            const config = { childList: true, subtree: true };
+            observer.observe(timerDiv, config);
+        };
+
+        class Wave {
+            constructor(waveDiv, clock, rocks, canvasWidth) {
+                this.waveDiv = waveDiv;
+                this.clock = clock;
+                this.rocks = rocks;
+                this.canvasWidth = canvasWidth;
+                this.wave = 1;
+                this.waveDiv.innerHTML = `Fase ${this.wave}`;
+            }
+
+            changeWave() {
+                if (this.clock.onlySeconds % 30 == 0 && this.rocks.length <= 5) {
+                    this.wave += 1;
+                    this.waveDiv.innerHTML = `Fase ${this.wave}`;
+                    this.rocks.push(new Rock(this.canvasWidth, 150, this.wave));
+                }
+            }
+        }
+
+        const randInt = (min, max) => {
+            return Math.round(Math.random() * (max - min) + min);
+        };
+
+        const checkCollision = (ship, rock, canvasWidth, score, rocks, wave) => {
+            if (
+                rock.x + rock.width > ship.x &&
+                rock.x < ship.x + ship.width &&
+                rock.y + rock.height > ship.y &&
+                rock.y < ship.y + ship.width
+            ) {
+                alert("Game Over!!\nClique em ok para reiniciar.");
+                restartGame(ship, rock, canvasWidth, score, rocks, wave);
+            }
+        };
+
+        const restartGame = (ship, rock, canvasWidth, score, rocks, wave) => {
+            ship.x = 200;
+            ship.y = 200;
+            ship.direction = "stopped";
+            rock.x = canvasWidth;
+            rock.y = randInt(0, 300);
+            score.restart();
+            score.clock.start();
+            wave.wave = 0;
+
+            for (let i = 0; i <= rocks.length; i++) {
+                rocks.pop();
+            }
+        };
+
+
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+        let loopId;
+
+        const timerDiv = document.getElementById("timer");
+        const pointsDiv = document.getElementById("scorePoints");
+        const wavesDiv = document.getElementById("wave");
+        const playBtn = document.getElementById("play");
+
+        const clock = new Clock(timerDiv);
+        const score = new Score(clock, pointsDiv, timerDiv);
+        const ship = new Ship();
+        const rocks = [new Rock(canvas.width, 150)];
+        const wave = new Wave(wavesDiv, clock, rocks, canvas.width);
+        let mulSpeedX = 1;
+
+        const startGame = () => {
+            playBtn.style.display = "none";
+            score.clock.start();
+            runOberver(timerDiv, ship, score, wave);
+            gameLoop();
+        };
+
+        const gameLoop = () => {
+            clearInterval(loopId);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ship.move(canvas.width, canvas.height);
+            ship.draw(ctx);
+
+            rocks.forEach((rock) => {
+                rock.draw(ctx);
+            });
+
+            rocks.forEach((rock) => {
+                rock.move(mulSpeedX, randInt);
+            });
+
+            rocks.forEach((rock) => {
+                checkCollision(ship, rock, canvas.width, score, rocks, wave);
+            });
+
+            rocks.forEach((rock) => {
+                rock.spaw(canvas, randInt);
+            });
+
+            keyboardListener(ship);
+
+            loopId = setInterval(() => {
+                gameLoop();
+            }, 50);
+        };
+
+        playBtn.addEventListener("click", startGame);
+
+    </script>
 </body>
 
 </html>

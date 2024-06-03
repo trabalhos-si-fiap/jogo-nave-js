@@ -15,7 +15,6 @@ export class Wave {
       this.wave += 1;
       this.waveDiv.innerHTML = `Fase ${this.wave}`;
       this.rocks.push(new Rock(this.canvasWidth, 150, this.wave));
-      console.log(this.rocks.length);
     }
   }
 }
